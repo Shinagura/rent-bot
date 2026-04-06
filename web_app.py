@@ -9,9 +9,12 @@ import threading
 import time
 
 # === Настройки ===
+# === Настройки ===
 app = Flask(__name__)
 app.secret_key = "super_secret_key_12345"
 PASSWORD = "12345"
+
+# Убедимся, что база и папки создаются в корне проекта
 DB_PATH = "rent.db"
 BACKUP_FOLDER = "backups"
 STATIC_FOLDER = "static"
@@ -536,6 +539,21 @@ def debug():
         rows = cursor.fetchall()
         return "<pre>" + "\n".join([str(r) for r in rows]) + "</pre>"
 
+@app.route("/export_db")
+def export_db():
+        if not session.get("logged_in"):
+            return redirect(url_for("login"))
+
+        # Проверим, существует ли файл
+        if not os.path.exists(DB_PATH):
+            return "❌ База данных не найдена", 404
+
+        return send_file(
+            DB_PATH,
+            as_attachment=True,
+            download_name=f"rent_backup_{datetime.now().strftime('%Y%m%d')}.db"
+        )
+
 # --- Автобэкап (каждый день в 3:00) ---
 def backup_job():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -555,9 +573,14 @@ def start_scheduler():
 # Запуск планировщика в фоне
 threading.Thread(target=start_scheduler, daemon=True).start()
 
+# --- Инициализация при старте (для Render и локально) ---
+init_db()
+print("✅ База данных инициализирована")
+
 # --- Запуск приложения ---
+init_db()
+print("✅ База данных инициализирована")
+
 if __name__ == "__main__":
-    init_db()
-    print("✅ База данных инициализирована")
     print("🚀 Запуск сервера на http://127.0.0.1:5000")
     app.run(debug=False, host="0.0.0.0", port=5000)
