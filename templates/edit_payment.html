@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать платёж</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #121212;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        .nav {
+            background: #1f1f1f;
+            padding: 12px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .nav a {
+            color: #bb86fc;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #1f1f1f;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+        }
+        h2 {
+            color: #bb86fc;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin: 16px 0 8px;
+            color: #ccc;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background: #2d2d2d;
+            color: #fff;
+        }
+        button {
+            background: #03dac6;
+            color: #121212;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #00bfa5;
+        }
+        .cancel {
+            background: #cf6679;
+            color: #121212;
+            margin-top: 10px;
+        }
+        .cancel:hover {
+            background: #b00020;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/dashboard">← Назад</a>
+    </div>
+    <div class="container">
+        <h2>✏️ Редактировать платёж: {{ tenant.name }}</h2>
+        <form method="POST">
+            <label>Сумма (₽)</label>
+            <input type="number" name="amount" step="0.01" value="{{ amount }}" required>
+
+            <label>Дата оплаты</label>
+            <input type="date" name="pay_date" value="{{ pay_date }}" required>
+
+            <label>Период</label>
+            <input type="month" name="period" value="{{ period }}" required>
+
+            <button type="submit">✅ Сохранить изменения</button>
+            <button type="button" class="cancel" onclick="window.location.href='/dashboard'">Отмена</button>
+        </form>
+    </div>
+</body>
+</html>

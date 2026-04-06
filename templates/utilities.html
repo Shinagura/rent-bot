@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЖКХ — Отчёты</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #121212;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        .nav {
+            background: #1f1f1f;
+            padding: 12px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .nav a {
+            color: #bb86fc;
+            margin: 0 12px;
+            text-decoration: none;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #bb86fc;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1f1f1f;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        th {
+            background: #333;
+            color: #bb86fc;
+        }
+        tr:hover {
+            background: #2d2d2d;
+        }
+        .btn {
+            display: inline-block;
+            background: #bb86fc;
+            color: #121212;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 5px;
+            font-weight: 500;
+        }
+        .btn:hover {
+            background: #3700b3;
+            color: white;
+        }
+        .total {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+            color: #03dac6;
+        }
+        .empty {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/dashboard">Главная</a>
+        <a href="/add_utility">➕ Добавить</a>
+        <a href="/export/utilities">📥 Экспорт</a>
+        <a href="/logout">Выход</a>
+    </div>
+
+    <div class="header">
+        <h1>🧾 Платежи за ЖКХ</h1>
+        <p>Текущий месяц</p>
+    </div>
+
+    {% if rows %}
+        <div class="total">
+            Общая сумма: <strong>{{ total }} ₽</strong>
+        </div>
+
+        <table>
+            <tr>
+                <th>Тип</th>
+                <th>Арендатор</th>
+                <th>Сумма</th>
+                <th>Дата</th>
+                <th>Действия</th>
+            </tr>
+            {% for utype, amount, pay_date, name, period, uid in rows %}
+            <tr>
+                <td>{{ type_names.get(utype, utype) }}</td>
+                <td>{{ name }}</td>
+                <td>{{ amount }} ₽</td>
+                <td>{{ pay_date }}</td>
+                <td>
+                    <a href="/edit_utility/{{ uid }}" class="btn">✏️ Редактировать</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p class="empty">Нет платежей за коммуналку в этом месяце.</p>
+    {% endif %}
+
+    <p style="text-align: center; margin-top: 20px;">
+        <a href="/export/utilities" class="btn">📥 Экспорт в Excel</a>
+    </p>
+</body>
+</html>

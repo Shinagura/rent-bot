@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить арендатора</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #121212;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        .nav {
+            background: #1f1f1f;
+            padding: 12px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .nav a {
+            color: #bb86fc;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #1f1f1f;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+        }
+        h2 {
+            color: #bb86fc;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background: #2d2d2d;
+            color: #fff;
+        }
+        button {
+            background: #03dac6;
+            color: #121212;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #00bfa5;
+        }
+        .cancel {
+            background: #cf6679;
+            color: #121212;
+            margin-top: 10px;
+        }
+        .cancel:hover {
+            background: #b00020;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/dashboard">← Назад</a>
+    </div>
+    <div class="container">
+        <h2>➕ Добавить арендатора</h2>
+        <form method="POST">
+            <div class="form-group">
+                <label>ФИО</label>
+                <input type="text" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Контакт</label>
+                <input type="text" name="contact">
+            </div>
+
+            <div class="form-group">
+                <label>Адрес объекта</label>
+                <input type="text" name="address" required>
+            </div>
+
+            <div class="form-group">
+                <label>Номер квартиры (если есть)</label>
+                <input type="text" name="apartment_num">
+            </div>
+
+            <div class="form-group">
+                <label>Тип объекта</label>
+                <select name="prop_type">
+                    <option value="apartment">Квартира</option>
+                    <option value="house">Дом</option>
+                </select>
+            </div>
+
+            <button type="submit">✅ Добавить арендатора</button>
+            <button type="button" class="cancel" onclick="window.location.href='/dashboard'">Отмена</button>
+        </form>
+    </div>
+</body>
+</html>

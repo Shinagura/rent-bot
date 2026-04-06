@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить платёж за аренду</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #121212;
+            color: #e0e0e0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .nav {
+            background: #1f1f1f;
+            padding: 12px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .nav a {
+            color: #bb86fc;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav a:hover {
+            color: #03dac6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #1f1f1f;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            border: 1px solid #333;
+        }
+        h2 {
+            color: #bb86fc;
+            margin-bottom: 24px;
+            text-align: center;
+            font-size: 24px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background: #2d2d2d;
+            color: #fff;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #bb86fc;
+            box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.25);
+        }
+        button {
+            background: #03dac6;
+            color: #121212;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: #00bfa5;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .note {
+            font-size: 13px;
+            color: #888;
+            text-align: center;
+            margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h2 {
+                font-size: 20px;
+            }
+            .nav a {
+                display: inline-block;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/dashboard">← Назад</a>
+    </div>
+
+    <div class="container">
+        <h2>➕ Добавить платёж за аренду</h2>
+        <form method="POST">
+            <div class="form-group">
+                <label for="tenant_id">Арендатор</label>
+                <select name="tenant_id" id="tenant_id" required>
+                    <option value="" disabled selected>Выберите арендатора</option>
+                    {% for id, name, contact, addr, apt, prop_type in tenants %}
+                        <option value="{{ id }}">{{ name }} — {{ addr }}{% if apt %} кв. {{ apt }}{% endif %}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Сумма (₽)</label>
+                <input type="number" name="amount" id="amount" step="0.01" min="0" placeholder="Например: 25000" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pay_date">Дата оплаты</label>
+                <input type="date" name="pay_date" id="pay_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="period">Период оплаты</label>
+                <input type="month" name="period" id="period" required>
+            </div>
+
+            <button type="submit">✅ Сохранить платёж</button>
+        </form>
+        <p class="note">Платёж будет привязан к выбранному арендатору и отображён в отчётах.</p>
+    </div>
+</body>
+</html>

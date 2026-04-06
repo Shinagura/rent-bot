@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Графики оплат</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background: #121212; color: #e0e0e0; font-family: sans-serif; padding: 20px; }
+        .nav { background: #1f1f1f; padding: 12px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
+        .nav a { color: #bb86fc; margin: 0 15px; text-decoration: none; }
+        .chart-container { background: #1f1f1f; padding: 20px; border-radius: 10px; }
+        h2 { text-align: center; color: #bb86fc; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/dashboard">← Назад</a>
+        <a href="/backup/create" class="btn" onclick="alert('Бэкап создан!')">🔄 Бэкап</a>
+    </div>
+
+    <h2>📈 Динамика оплат по месяцам</h2>
+
+    <div class="chart-container">
+        <canvas id="paymentsChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('paymentsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ months|tojson }},
+                datasets: [
+                    {
+                        label: 'Аренда',
+                        data: {{ rent_series|tojson }},
+                        borderColor: '#bb86fc',
+                        tension: 0.3,
+                        fill: false
+                    },
+                    {
+                        label: 'ЖКХ',
+                        data: {{ util_series|tojson }},
+                        borderColor: '#03dac6',
+                        tension: 0.3,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Сумма (₽)' } },
+                    x: { title: { display: true, text: 'Месяц' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления</title>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="icon" href="{{ url_for('static', filename='icon-192.png') }}" sizes="192x192">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/static/service-worker.js');
+        });
+      }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+        .nav {
+            background: #1f1f1f;
+            padding: 12px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .nav a {
+            color: #bb86fc;
+            margin: 0 12px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav a:hover {
+            color: #03dac6;
+        }
+        .header {
+            background: #1f1f1f;
+            color: #bb86fc;
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        .card {
+            background: #1f1f1f;
+            padding: 20px;
+            border-radius: 10px;
+            width: 200px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border: 1px solid #333;
+        }
+        .card h3 {
+            color: #03dac6;
+            margin-bottom: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1f1f1f;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            margin: 20px 0;
+            border: 1px solid #333;
+        }
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        th {
+            background: #333;
+            color: #bb86fc;
+            font-weight: 500;
+        }
+        tr:hover {
+            background: #2d2d2d;
+        }
+        .btn {
+            display: inline-block;
+            background: #bb86fc;
+            color: #121212;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #3700b3;
+            color: white;
+        }
+        .btn.danger {
+            background: #cf6679;
+            color: #121212;
+        }
+        .btn.danger:hover {
+            background: #b00020;
+        }
+        .debts {
+            background: #3d1c1c;
+            padding: 16px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #cf6679;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        @media (max-width: 600px) {
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            .card {
+                width: 100%;
+                max-width: 300px;
+            }
+            .nav a {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+    <a href="/dashboard">🏠 Главная</a>
+    <a href="/add_payment">➕ Аренда</a>
+    <a href="/add_utility">🧾 ЖКХ</a>
+    <a href="/add_tenant">➕ Арендатор</a>
+    <a href="/stats">📊 Графики</a>
+    <a href="/backup/create">🔄 Бэкап</a>
+    <a href="/logout">🚪 Выход</a>
+</div>
+
+    <div class="header">
+        <h1>📊 Учёт аренды и ЖКХ</h1>
+        <p>{{ now }}</p>
+    </div>
+
+    <div class="stats">
+        <div class="card">
+            <h3>💰 Аренда</h3>
+            <p><strong>{{ total_rent }} ₽</strong></p>
+        </div>
+        <div class="card">
+            <h3>🧾 Коммуналка</h3>
+            <p><strong>{{ total_utilities }} ₽</strong></p>
+        </div>
+        <div class="card">
+            <h3>📌 Долги</h3>
+            <p><strong>{{ debts|length }}</strong></p>
+        </div>
+    </div>
+
+    {% if debts %}
+        <div class="debts">
+            <h3>⚠️ Не оплатили:</h3>
+            <ul style="list-style: none; padding: 0;">
+                {% for n, a, ap, d in debts %}
+                    <li>• {{ n }} ({{ a }}{% if ap %} кв. {{ ap }}{% endif %}) — до {{ d }} числа</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <h2>📋 Платежи за месяц</h2>
+    <table>
+        <tr>
+            <th>Арендатор</th>
+            <th>Объект</th>
+            <th>Сумма</th>
+            <th>Дата</th>
+            <th>Действия</th>
+        </tr>
+        {% for id, name, contact, addr, apt, prop_type in tenants %}
+            <tr>
+                <td>{{ name }}</td>
+                <td>{{ addr }}{% if apt %} кв. {{ apt }}{% endif %}</td>
+                <td>{{ payments[id].amount if payments[id].amount else '—' }} ₽</td>
+                <td>{{ payments[id].pay_date if payments[id].pay_date else '—' }}</td>
+                <td class="actions">
+                    <a href="/edit_payment/{{ id }}" class="btn">✏️ Редактировать</a>
+                    <a href="/edit_tenant/{{ id }}" class="btn">👤 Изменить ФИО/адрес</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <p style="text-align: center; margin-top: 20px;">
+        <a href="/export/payments" class="btn">📥 Экспорт аренды</a>
+        <a href="/export/utilities" class="btn">📥 Экспорт ЖКХ</a>
+        <a href="/backup/create" class="btn" onclick="alert('Бэкап создан!')">🔄 Создать резервную копию</a>
+    </p>
+</body>
+</html>
