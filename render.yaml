@@ -7,6 +7,3 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.8
-    disk:
-      name: app-data
-      mountPath: /var/data
